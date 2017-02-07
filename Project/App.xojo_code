@@ -118,8 +118,8 @@ Inherits Application
 		        
 		        Dim Dialog As New MessageDialog
 		        Dialog.Title = ""
-		        Dialog.Message = "Engram database has been updated"
-		        Dialog.Explanation = "Engrams, loot sources, and presets are now current as of " + LastSync.ToText(Xojo.Core.Locale.Current, Xojo.Core.Date.FormatStyles.Long, Xojo.Core.Date.FormatStyles.Short) + " UTC."
+		        Dialog.Message = Self.EngramsUpdatedMessage
+		        Dialog.Explanation = Language.Format(Self.EngramsUpdatedExplanation, LastSync.ToText(Xojo.Core.Locale.Current, Xojo.Core.Date.FormatStyles.Long, Xojo.Core.Date.FormatStyles.Short))
 		        Call Dialog.ShowModal
 		        Return
 		      End If
@@ -129,8 +129,8 @@ Inherits Application
 		    
 		    Dim Dialog As New MessageDialog
 		    Dialog.Title = ""
-		    Dialog.Message = "Unable to import engram data"
-		    Dialog.Explanation = "Sorry about that. The file may not be correctly formatted."
+		    Dialog.Message = Self.UnableToImportEngrams
+		    Dialog.Explanation = Self.UnableToImportExplanation
 		    Call Dialog.ShowModal
 		    
 		    Return
@@ -144,8 +144,8 @@ Inherits Application
 		    Else
 		      Dim Dialog As New MessageDialog
 		      Dialog.Title = ""
-		      Dialog.Message = "Unable to import preset"
-		      Dialog.Explanation = "Sorry about that. The file may not be correctly formatted."
+		      Dialog.Message = Self.UnableToImportPreset
+		      Dialog.Explanation = Self.UnableToImportExplanation
 		      Call Dialog.ShowModal
 		    End If
 		    Return
@@ -159,8 +159,8 @@ Inherits Application
 		  
 		  Dim Dialog As New MessageDialog
 		  Dialog.Title = ""
-		  Dialog.Message = "Unable to open file"
-		  Dialog.Explanation = "Beacon doesn't know what to do with the file " + Item.Name
+		  Dialog.Message = Self.UnableToImportGeneric
+		  Dialog.Explanation = Language.Format(Self.UnableToImportGenericExplanation, Item.Name)
 		  Call Dialog.ShowModal
 		End Sub
 	#tag EndEvent
@@ -478,18 +478,46 @@ Inherits Application
 	#tag EndProperty
 
 
-	#tag Constant, Name = kEditClear, Type = String, Dynamic = False, Default = \"&Delete", Scope = Public
-		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"&Delete"
-		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"&Delete"
+	#tag Constant, Name = EngramsUpdatedExplanation, Type = String, Dynamic = True, Default = \"Engrams\x2C loot sources\x2C and presets are now current as of %%1%% UTC.", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kFileQuit, Type = String, Dynamic = False, Default = \"&Quit", Scope = Public
-		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"E&xit"
+	#tag Constant, Name = EngramsUpdatedMessage, Type = String, Dynamic = True, Default = \"Engram database has been updated", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Engram database has been updated"
+	#tag EndConstant
+
+	#tag Constant, Name = kEditClear, Type = String, Dynamic = True, Default = \"&Delete", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"&Delete"
+	#tag EndConstant
+
+	#tag Constant, Name = kFileQuit, Type = String, Dynamic = True, Default = \"&Quit", Scope = Public
+		#Tag Instance, Platform = Windows, Language = en, Definition  = \"E&xit"
+		#Tag Instance, Platform = Mac OS, Language = en, Definition  = \"&Quit"
+		#Tag Instance, Platform = Linux, Language = en, Definition  = \"&Quit"
 	#tag EndConstant
 
 	#tag Constant, Name = kFileQuitShortcut, Type = String, Dynamic = False, Default = \"", Scope = Public
 		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"Cmd+Q"
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"Ctrl+Q"
+	#tag EndConstant
+
+	#tag Constant, Name = UnableToImportEngrams, Type = String, Dynamic = True, Default = \"Unable to import engram data", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Unable to import engram data"
+	#tag EndConstant
+
+	#tag Constant, Name = UnableToImportExplanation, Type = String, Dynamic = True, Default = \"Sorry about that. The file may not be correctly formatted.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Sorry about that. The file may not be correctly formatted."
+	#tag EndConstant
+
+	#tag Constant, Name = UnableToImportGeneric, Type = String, Dynamic = True, Default = \"Unable to import file", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Unable to import file"
+	#tag EndConstant
+
+	#tag Constant, Name = UnableToImportGenericExplanation, Type = String, Dynamic = True, Default = \"Beacon doesn\'t know what to do with the file %%1%%", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Beacon doesn\'t know what to do with the file %%1%%"
+	#tag EndConstant
+
+	#tag Constant, Name = UnableToImportPreset, Type = String, Dynamic = True, Default = \"Unable to import preset", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Unable to import preset"
 	#tag EndConstant
 
 

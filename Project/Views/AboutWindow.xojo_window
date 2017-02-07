@@ -144,7 +144,7 @@ Begin BeaconWindow AboutWindow
       Selectable      =   False
       TabIndex        =   3
       TabPanelIndex   =   0
-      Text            =   "© 2016 Thom McGrath, All Rights Reserved."
+      Text            =   "#Copyright"
       TextAlign       =   1
       TextColor       =   &c00000000
       TextFont        =   "SmallSystem"
@@ -229,7 +229,7 @@ Begin BeaconWindow AboutWindow
       Bold            =   False
       ButtonStyle     =   "0"
       Cancel          =   False
-      Caption         =   "Update Engrams"
+      Caption         =   "#UpdateEngrams"
       Default         =   False
       Enabled         =   True
       Height          =   18
@@ -281,6 +281,7 @@ Begin BeaconWindow AboutWindow
       LockedInPosition=   False
       Scope           =   2
       TabPanelIndex   =   0
+      ValidateCertificates=   False
    End
 End
 #tag EndWindow
@@ -297,14 +298,47 @@ End
 		Sub Update()
 		  Dim LastSync As Xojo.Core.Date = App.LocalData.LastSync
 		  If LastSync = Nil Then
-		    SyncLabel.Text = "No engram data available"
+		    SyncLabel.Text = Self.NoEngramsAvailable
 		  Else
-		    SyncLabel.Text = "Engrams updated " + LastSync.ToText(Xojo.Core.Locale.Current, Xojo.Core.Date.FormatStyles.Long, Xojo.Core.Date.FormatStyles.Short) + " UTC"
+		    SyncLabel.Text = Language.Format(Self.EngramsUpdated, LastSync.ToText(Xojo.Core.Locale.Current, Xojo.Core.Date.FormatStyles.Long, Xojo.Core.Date.FormatStyles.Short))
 		  End If
 		  
-		  VersionLabel.Text = "Version " + App.ShortVersion + " (Build " + Str(App.NonReleaseVersion, "-0") + ")"
+		  VersionLabel.Text = Language.Format(Self.VersionString, App.ShortVersion, Str(App.NonReleaseVersion, "-0"))
 		End Sub
 	#tag EndMethod
+
+
+	#tag Constant, Name = ChecksumFailed, Type = String, Dynamic = True, Default = \"Checksum verification failed. Expected hash %%1%% but computed %%2%% instead.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Checksum verification failed. Expected hash %%1%% but computed %%2%% instead."
+	#tag EndConstant
+
+	#tag Constant, Name = Copyright, Type = String, Dynamic = True, Default = \"\xC2\xA9 2016 Thom McGrath\x2C All Rights Reserved.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"\xC2\xA9 2016 Thom McGrath\x2C All Rights Reserved."
+	#tag EndConstant
+
+	#tag Constant, Name = EngramsUpdated, Type = String, Dynamic = True, Default = \"Engrams Updated %%1%% UTC", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Engrams Updated %%1%% UTC"
+	#tag EndConstant
+
+	#tag Constant, Name = NoEngramsAvailable, Type = String, Dynamic = True, Default = \"No engram data available", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"No engram data available"
+	#tag EndConstant
+
+	#tag Constant, Name = UnableToContactServer, Type = String, Dynamic = True, Default = \"Unable to contact server. Reason: \"\"%%1%%\"", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Unable to contact server. Reason: \"\"%%1%%\""
+	#tag EndConstant
+
+	#tag Constant, Name = UnexpectedHTTPResponse, Type = String, Dynamic = True, Default = \"Server replied with HTTP %%1%%.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Server replied with HTTP %%1%%."
+	#tag EndConstant
+
+	#tag Constant, Name = UpdateEngrams, Type = String, Dynamic = True, Default = \"Update Engrams", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Update Engrams"
+	#tag EndConstant
+
+	#tag Constant, Name = VersionString, Type = String, Dynamic = True, Default = \"Version %%1%% (Build %%2%%)", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Version %%1%% (Build %%2%%)"
+	#tag EndConstant
 
 
 #tag EndWindowCode
@@ -375,8 +409,8 @@ End
 		  
 		  Dim Dialog As New MessageDialog
 		  Dialog.Title = ""
-		  Dialog.Message = "Unable to update engrams"
-		  Dialog.Explanation = "Unable to contact server. Reason: """ + Err.Reason + """"
+		  Dialog.Message = App.UnableToImportEngrams
+		  Dialog.Explanation = Language.Format(Self.UnableToContactServer, Err.Reason)
 		  Call Dialog.ShowModal
 		End Sub
 	#tag EndEvent
@@ -389,8 +423,8 @@ End
 		  If HTTPStatus <> 200 Then
 		    Dim Dialog As New MessageDialog
 		    Dialog.Title = ""
-		    Dialog.Message = "Unable to update engrams"
-		    Dialog.Explanation = "Server replied with HTTP " + Str(HTTPStatus, "-0")
+		    Dialog.Message = App.UnableToImportEngrams
+		    Dialog.Explanation = Language.Format(Self.UnexpectedHTTPResponse, Str(HTTPStatus, "-0"))
 		    Call Dialog.ShowModal
 		    Return
 		  End If
@@ -402,8 +436,8 @@ End
 		  If ComputedHash <> ExpectedHash Then
 		    Dim Dialog As New MessageDialog
 		    Dialog.Title = ""
-		    Dialog.Message = "Unable to update engrams"
-		    Dialog.Explanation = "Checksum verification failed. Expected hash " + ExpectedHash + " but computed " + ComputedHash + " instead."
+		    Dialog.Message = App.UnableToImportEngrams
+		    Dialog.Explanation = Language.Format(Self.ChecksumFailed, ExpectedHash, ComputedHash)
 		    Call Dialog.ShowModal
 		    Return
 		  End If
@@ -414,14 +448,14 @@ End
 		    Dim LastSync As Xojo.Core.Date = App.LocalData.LastSync
 		    Dim Dialog As New MessageDialog
 		    Dialog.Title = ""
-		    Dialog.Message = "Engram database has been updated"
-		    Dialog.Explanation = "Engrams, loot sources, and presets are now current as of " + LastSync.ToText(Xojo.Core.Locale.Current, Xojo.Core.Date.FormatStyles.Long, Xojo.Core.Date.FormatStyles.Short) + " UTC."
+		    Dialog.Message = App.EngramsUpdatedMessage
+		    Dialog.Explanation = Language.Format(App.EngramsUpdatedExplanation, LastSync.ToText(Xojo.Core.Locale.Current, Xojo.Core.Date.FormatStyles.Long, Xojo.Core.Date.FormatStyles.Short))
 		    Call Dialog.ShowModal
 		  Else
 		    Dim Dialog As New MessageDialog
 		    Dialog.Title = ""
-		    Dialog.Message = "Unable to import engram data"
-		    Dialog.Explanation = "Sorry about that. The data may not be correctly formatted."
+		    Dialog.Message = App.UnableToImportEngrams
+		    Dialog.Explanation = App.UnableToImportExplanation
 		    Call Dialog.ShowModal
 		  End If
 		End Sub
