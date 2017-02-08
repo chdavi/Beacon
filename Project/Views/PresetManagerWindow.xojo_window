@@ -303,6 +303,11 @@ End
 	#tag EndProperty
 
 
+	#tag Constant, Name = PresetLibrary, Type = String, Dynamic = True, Default = \"Preset Library", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Preset Library"
+	#tag EndConstant
+
+
 #tag EndWindowCode
 
 #tag Events List

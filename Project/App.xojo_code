@@ -485,21 +485,6 @@ Inherits Application
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Engram database has been updated"
 	#tag EndConstant
 
-	#tag Constant, Name = kEditClear, Type = String, Dynamic = True, Default = \"&Delete", Scope = Public
-		#Tag Instance, Platform = Any, Language = en, Definition  = \"&Delete"
-	#tag EndConstant
-
-	#tag Constant, Name = kFileQuit, Type = String, Dynamic = True, Default = \"&Quit", Scope = Public
-		#Tag Instance, Platform = Windows, Language = en, Definition  = \"E&xit"
-		#Tag Instance, Platform = Mac OS, Language = en, Definition  = \"&Quit"
-		#Tag Instance, Platform = Linux, Language = en, Definition  = \"&Quit"
-	#tag EndConstant
-
-	#tag Constant, Name = kFileQuitShortcut, Type = String, Dynamic = False, Default = \"", Scope = Public
-		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"Cmd+Q"
-		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"Ctrl+Q"
-	#tag EndConstant
-
 	#tag Constant, Name = UnableToImportEngrams, Type = String, Dynamic = True, Default = \"Unable to import engram data", Scope = Public
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Unable to import engram data"
 	#tag EndConstant

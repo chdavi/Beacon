@@ -457,20 +457,20 @@ End
 		  
 		  Select Case BeaconList.SelCount
 		  Case 0
-		    DocumentRemoveBeacon.Text = Self.MenuRemoveLootSource
+		    DocumentRemoveBeacon.Text = Language.MenuRemoveLootSource
 		    For I As Integer = DocumentAddItemSet.Count - 1 DownTo 0
 		      DocumentAddItemSet.Remove(I)
 		    Next
-		    DocumentAddItemSet.Append(New MenuItem("New Empty Set"))
+		    DocumentAddItemSet.Append(New MenuItem(Language.MenuNewEmptySet))
 		    DocumentAddItemSet.Item(0).Enabled = False
 		  Case 1
-		    DocumentRemoveBeacon.Text = Self.MenuRemoveLootSource
+		    DocumentRemoveBeacon.Text = Language.MenuRemoveLootSource
 		    DocumentDuplicateBeacon.Enable
 		    DocumentRemoveBeacon.Enable
 		    Editor.EnableMenuItems
 		    EditClear.Enable
 		  Else
-		    DocumentRemoveBeacon.Text = Self.MenuRemoveLootSources
+		    DocumentRemoveBeacon.Text = Language.MenuRemoveLootSources
 		    DocumentRemoveBeacon.Enable
 		    Editor.EnableMenuItems
 		    EditClear.Enable
@@ -1021,14 +1021,6 @@ End
 
 	#tag Constant, Name = LootSourcesHeader, Type = String, Dynamic = True, Default = \"Loot Sources", Scope = Public
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Loot Sources"
-	#tag EndConstant
-
-	#tag Constant, Name = MenuRemoveLootSource, Type = String, Dynamic = True, Default = \"Remove Loot Source", Scope = Public
-		#Tag Instance, Platform = Any, Language = en, Definition  = \"Remove Loot Source"
-	#tag EndConstant
-
-	#tag Constant, Name = MenuRemoveLootSources, Type = String, Dynamic = True, Default = \"Remove Loot Sources", Scope = Public
-		#Tag Instance, Platform = Any, Language = en, Definition  = \"Remove Loot Sources"
 	#tag EndConstant
 
 	#tag Constant, Name = ScorchedSourcesLabel, Type = String, Dynamic = True, Default = \"Scorched", Scope = Public

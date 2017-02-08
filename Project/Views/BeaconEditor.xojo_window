@@ -401,7 +401,7 @@ End
 		    Parent.Remove(I)
 		  Next
 		  
-		  Dim EmptySetItem As New MenuItem("New Empty Set", Nil)
+		  Dim EmptySetItem As New MenuItem(Language.MenuNewEmptySet, Nil)
 		  AddHandler EmptySetItem.Action, WeakAddressOf Self.HandlePresetMenu
 		  Parent.Append(EmptySetItem)
 		  
