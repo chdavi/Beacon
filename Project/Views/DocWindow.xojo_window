@@ -23,7 +23,7 @@ Begin BeaconWindow DocWindow
    MinWidth        =   1100
    Placement       =   0
    Resizeable      =   True
-   Title           =   "Untitled Document"
+   Title           =   "#DefaultWindowTitle"
    Visible         =   True
    Width           =   1100
    Begin BeaconListbox BeaconList
@@ -141,7 +141,7 @@ Begin BeaconWindow DocWindow
       Enabled         =   True
       EraseBackground =   True
       Height          =   24
-      HelpTag         =   "Add a loot source. Click to show the  ""Add Loot Source"" dialog, hold to show a menu of possible loot sources."
+      HelpTag         =   "#AddLootSourceHelpTag"
       IconDisabled    =   0
       IconNormal      =   0
       IconPressed     =   0
@@ -172,7 +172,7 @@ Begin BeaconWindow DocWindow
       Enabled         =   False
       EraseBackground =   True
       Height          =   24
-      HelpTag         =   "Remove the selected loot source."
+      HelpTag         =   "#DeleteLootSourceHelpTag"
       IconDisabled    =   0
       IconNormal      =   0
       IconPressed     =   0
@@ -358,7 +358,7 @@ Begin BeaconWindow DocWindow
       Enabled         =   False
       EraseBackground =   True
       Height          =   24
-      HelpTag         =   "Edit the selected items."
+      HelpTag         =   "#EditLootSourceHelpTag"
       IconDisabled    =   0
       IconNormal      =   0
       IconPressed     =   0
@@ -404,7 +404,7 @@ Begin BeaconWindow DocWindow
       TabPanelIndex   =   0
       TabStop         =   True
       TintColor       =   &cEAEEF100
-      Title           =   "Loot Sources"
+      Title           =   "#LootSourcesHeader"
       Top             =   0
       Transparent     =   True
       UseFocusRing    =   True
@@ -425,10 +425,10 @@ End
 		  
 		  Dim Dialog As New MessageDialog
 		  Dialog.Title = ""
-		  Dialog.Message = "Do you want to save changes to """ + Self.Title + """ before closing?"
-		  Dialog.Explanation = "If you don't save, your changes will be lost."
-		  Dialog.ActionButton.Caption = "Save"
-		  Dialog.AlternateActionButton.Caption = "Don't Save"
+		  Dialog.Message = Language.Format(Self.ConfirmSaveMessage, Self.Title)
+		  Dialog.Explanation = Self.ConfirmSaveExplanation
+		  Dialog.ActionButton.Caption = Self.ConfirmSaveAction
+		  Dialog.AlternateActionButton.Caption = Self.ConfirmSaveAlternate
 		  Dialog.CancelButton.Visible = True
 		  Dialog.AlternateActionButton.Visible = True
 		  
@@ -455,24 +455,22 @@ End
 		  FileClose.Enable
 		  DocumentAddBeacon.Enable
 		  
-		  
-		  
 		  Select Case BeaconList.SelCount
 		  Case 0
-		    DocumentRemoveBeacon.Text = "Remove Loot Source"
+		    DocumentRemoveBeacon.Text = Self.MenuRemoveLootSource
 		    For I As Integer = DocumentAddItemSet.Count - 1 DownTo 0
 		      DocumentAddItemSet.Remove(I)
 		    Next
 		    DocumentAddItemSet.Append(New MenuItem("New Empty Set"))
 		    DocumentAddItemSet.Item(0).Enabled = False
 		  Case 1
-		    DocumentRemoveBeacon.Text = "Remove Loot Source"
+		    DocumentRemoveBeacon.Text = Self.MenuRemoveLootSource
 		    DocumentDuplicateBeacon.Enable
 		    DocumentRemoveBeacon.Enable
 		    Editor.EnableMenuItems
 		    EditClear.Enable
 		  Else
-		    DocumentRemoveBeacon.Text = "Remove Loot Sources"
+		    DocumentRemoveBeacon.Text = Self.MenuRemoveLootSources
 		    DocumentRemoveBeacon.Enable
 		    Editor.EnableMenuItems
 		    EditClear.Enable
@@ -549,9 +547,9 @@ End
 		Function DocumentUnpublishDocument() As Boolean Handles DocumentUnpublishDocument.Action
 			Dim Dialog As New MessageDialog
 			Dialog.Title = ""
-			Dialog.Message = "Are you sure you want to unpublish this document?"
-			Dialog.Explanation = "This document will no longer be available to download. If you choose to publish again, the document url will remain the same, so you can always change your mind."
-			Dialog.ActionButton.Caption = "Unpublish"
+			Dialog.Message = Self.ConfirmUnpublishMessage
+			Dialog.Explanation = Self.ConfirmUnpublishExplanation
+			Dialog.ActionButton.Caption = Self.ConfirmUnpublishAction
 			Dialog.CancelButton.Visible = True
 			
 			Dim Choice As MessageDialogButton = Dialog.ShowModalWithin(Self)
@@ -598,8 +596,8 @@ End
 			Else
 			Dim Warning As New MessageDialog
 			Warning.Title = ""
-			Warning.Message = "No loot sources to export"
-			Warning.Explanation = "Beacon cannot export anything from this document because it contains no loot sources for either environment."
+			Warning.Message = Self.ExportErrorMessage
+			Warning.Explanation = Self.ExportErrorExplanation
 			Call Warning.ShowModalWithin(Self)
 			Return True
 			End If
@@ -703,7 +701,7 @@ End
 		  Self.Doc = New Beacon.Document
 		  Super.Constructor
 		  Self.DocumentCounter = Self.DocumentCounter + 1
-		  Self.Title = "Untitled " + Str(Self.DocumentCounter, "-0")
+		  Self.Title = Language.Format(Self.DefaultWindowTitle, Str(Self.DocumentCounter, "-0"))
 		End Sub
 	#tag EndMethod
 
@@ -712,7 +710,7 @@ End
 		  Self.Doc = Doc
 		  Super.Constructor
 		  Self.DocumentCounter = Self.DocumentCounter + 1
-		  Self.Title = "Untitled " + Str(Self.DocumentCounter, "-0")
+		  Self.Title = Language.Format(Self.DefaultWindowTitle, Str(Self.DocumentCounter, "-0"))
 		  Self.ContentsChanged = True
 		  
 		End Sub
@@ -768,12 +766,12 @@ End
 		  Dim Dialog As New MessageDialog
 		  Dialog.Title = ""
 		  If BeaconList.SelCount = 1 Then
-		    Dialog.Message = "Are you sure you want to delete the selected loot source?"
+		    Dialog.Message = Self.ConfirmRemoveSourceMessageSingular
 		  Else
-		    Dialog.Message = "Are you sure you want to delete these " + Str(BeaconList.SelCount, "-0") + " loot sources?"
+		    Dialog.Message = Language.Format(Self.ConfirmRemoveSourceMessagePlural, Str(BeaconList.SelCount, "-0"))
 		  End If
-		  Dialog.Explanation = "This action cannot be undone."
-		  Dialog.ActionButton.Caption = "Delete"
+		  Dialog.Explanation = Self.ConfirmRemoveSourceExplanation
+		  Dialog.ActionButton.Caption = Self.ConfirmRemoveSourceAction
 		  Dialog.CancelButton.Visible = True
 		  
 		  Dim Choice As MessageDialogButton = Dialog.ShowModalWithin(Self)
@@ -942,7 +940,111 @@ End
 	#tag EndProperty
 
 
+	#tag Constant, Name = AddLootSourceHelpTag, Type = String, Dynamic = True, Default = \"Add a loot source. Click to show the  \"Add Loot Source\" dialog\x2C hold to show a menu of possible loot sources.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Add a loot source. Click to show the  \"Add Loot Source\" dialog\x2C hold to show a menu of possible loot sources."
+	#tag EndConstant
+
+	#tag Constant, Name = AllSourcesLabel, Type = String, Dynamic = True, Default = \"All", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"All"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmRemoveSourceAction, Type = String, Dynamic = True, Default = \"Delete", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Delete"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmRemoveSourceExplanation, Type = String, Dynamic = True, Default = \"This action cannot be undone.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"This action cannot be undone."
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmRemoveSourceMessagePlural, Type = String, Dynamic = True, Default = \"Are you sure you want to delete these %%1%% loot sources\?", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Are you sure you want to delete these %%1%% loot sources\?"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmRemoveSourceMessageSingular, Type = String, Dynamic = True, Default = \"Are you sure you want to delete the selected loot source\?", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Are you sure you want to delete the selected loot source\?"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmSaveAction, Type = String, Dynamic = True, Default = \"Save", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Save"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmSaveAlternate, Type = String, Dynamic = True, Default = \"Don\'t Save", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Don\'t Save"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmSaveExplanation, Type = String, Dynamic = True, Default = \"If you don\'t save\x2C your changes will be lost.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"If you don\'t save\x2C your changes will be lost."
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmSaveMessage, Type = String, Dynamic = True, Default = \"Do you want to save changes to \"%%1%%\" before closing\?", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Do you want to save changes to \"%%1%%\" before closing\?"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmUnpublishAction, Type = String, Dynamic = True, Default = \"Unpublish", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Unpublish"
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmUnpublishExplanation, Type = String, Dynamic = True, Default = \"This document will no longer be available to download. If you choose to publish again\x2C the document url will remain the same\x2C so you can always change your mind.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"This document will no longer be available to download. If you choose to publish again\x2C the document url will remain the same\x2C so you can always change your mind."
+	#tag EndConstant
+
+	#tag Constant, Name = ConfirmUnpublishMessage, Type = String, Dynamic = True, Default = \"Are you sure you want to unpublish this document\?", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Are you sure you want to unpublish this document\?"
+	#tag EndConstant
+
+	#tag Constant, Name = DefaultWindowTitle, Type = String, Dynamic = True, Default = \"Untitled %%1%%", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Untitled %%1%%"
+	#tag EndConstant
+
+	#tag Constant, Name = DeleteLootSourceHelpTag, Type = String, Dynamic = True, Default = \"Remove the selected loot source.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Remove the selected loot source."
+	#tag EndConstant
+
+	#tag Constant, Name = EditLootSourceHelpTag, Type = String, Dynamic = True, Default = \"Edit the selected loot source.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Edit the selected loot source."
+	#tag EndConstant
+
+	#tag Constant, Name = ExportErrorExplanation, Type = String, Dynamic = True, Default = \"Beacon cannot export anything from this document because it contains no loot sources for either environment.", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Beacon cannot export anything from this document because it contains no loot sources for either environment."
+	#tag EndConstant
+
+	#tag Constant, Name = ExportErrorMessage, Type = String, Dynamic = True, Default = \"No loot sources to export", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"No loot sources to export"
+	#tag EndConstant
+
+	#tag Constant, Name = IslandSourcesLabel, Type = String, Dynamic = True, Default = \"Island", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Island"
+	#tag EndConstant
+
 	#tag Constant, Name = kClipboardType, Type = String, Dynamic = False, Default = \"com.thezaz.beacon.beacon", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = LootSourcesHeader, Type = String, Dynamic = True, Default = \"Loot Sources", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Loot Sources"
+	#tag EndConstant
+
+	#tag Constant, Name = MenuRemoveLootSource, Type = String, Dynamic = True, Default = \"Remove Loot Source", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Remove Loot Source"
+	#tag EndConstant
+
+	#tag Constant, Name = MenuRemoveLootSources, Type = String, Dynamic = True, Default = \"Remove Loot Sources", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Remove Loot Sources"
+	#tag EndConstant
+
+	#tag Constant, Name = ScorchedSourcesLabel, Type = String, Dynamic = True, Default = \"Scorched", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Scorched"
+	#tag EndConstant
+
+	#tag Constant, Name = UnpublishErrorAction, Type = String, Dynamic = True, Default = \"Report", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Report"
+	#tag EndConstant
+
+	#tag Constant, Name = UnpublishErrorExplanation, Type = String, Dynamic = True, Default = \"The server denied your request to unpublish the document. Would you like to report this problem\?", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"The server denied your request to unpublish the document. Would you like to report this problem\?"
+	#tag EndConstant
+
+	#tag Constant, Name = UnpublishErrorMessage, Type = String, Dynamic = True, Default = \"Unable to unpublish document", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Unable to unpublish document"
 	#tag EndConstant
 
 
@@ -1219,9 +1321,9 @@ End
 		Sub DeleteError()
 		  Dim Dialog As New MessageDialog
 		  Dialog.Title = ""
-		  Dialog.Message = "Unable to unpublish document"
-		  Dialog.Explanation = "The server denied your request to unpublish the document. Would you like to report this problem?"
-		  Dialog.ActionButton.Caption = "Report"
+		  Dialog.Message = Self.UnpublishErrorMessage
+		  Dialog.Explanation = Self.UnpublishErrorExplanation
+		  Dialog.ActionButton.Caption = Self.UnpublishErrorAction
 		  Dialog.CancelButton.Visible = True
 		  
 		  Dim Choice As MessageDialogButton = Dialog.ShowModalWithin(Self)
@@ -1261,9 +1363,9 @@ End
 #tag Events LootSourceHeader
 	#tag Event
 		Sub Open()
-		  Me.AddSegment("All")
-		  Me.AddSegment("Island")
-		  Me.AddSegment("Scorched")
+		  Me.AddSegment(Self.AllSourcesLabel.ToText)
+		  Me.AddSegment(Self.IslandSourcesLabel.ToText)
+		  Me.AddSegment(Self.ScorchedSourcesLabel.ToText)
 		  
 		  Me.SegmentIndex = 0
 		End Sub
